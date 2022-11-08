@@ -14,6 +14,7 @@ public class Generator implements Runnable {
     public synchronized void run() {
         try {
             Random random = new Random();
+            //Генерирует файлы до остановки программы
             while (true) {
                 FileType fileType = FileType.JSON;
                 int type = random.nextInt(3);

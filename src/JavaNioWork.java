@@ -25,6 +25,7 @@ public class JavaNioWork {
     public JavaNioWork() {
     }
 
+    /*Простое создание файла и запись в него, чтение с помощью nio*/
     public void prac1() throws IOException {
         String text = "There is an idea of a Patrick Bateman; some kind of abstraction. But there is no real me: only an entity, something illusory. And though I can hide my cold gaze, and you can shake my hand and feel flesh gripping yours and maybe you can even sense our lifestyles are probably comparable... I simply am not there";
         try (FileOutputStream file = new FileOutputStream(String.valueOf(testFilePath))) {
@@ -96,12 +97,13 @@ public class JavaNioWork {
         Files.copy(sourceFile.toPath(), destFile.toPath());
     }
 
+    /*Вычисление контрольной суммы файла с последующим высвобождением буффера*/
     public void prac3(String name) throws IOException, NoSuchFieldException, ClassNotFoundException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
         FileInputStream fileInputStream = new FileInputStream(name);
         FileChannel fileChannel = fileInputStream.getChannel();
         MappedByteBuffer byteBuffer = fileChannel.map(FileChannel.MapMode.READ_ONLY, 0, (int) fileChannel.size());
 
-
+        /*Алгоритм подсчета контрольной суммы*/
         int sum = 0;
         while (byteBuffer.hasRemaining()) {
             if ((sum & 1) != 0) {
@@ -112,17 +114,20 @@ public class JavaNioWork {
             sum += byteBuffer.get() & 0xff;
             sum &= 0xffff;
         }
+        /*Высвобождение буффера*/
         fileChannel.close();
         fileInputStream.close();
+
         Class<?> unsafeClass = Class.forName("sun.misc.Unsafe");
         Field unsafeField = unsafeClass.getDeclaredField("theUnsafe");
         unsafeField.setAccessible(true);
         Object unsafe = unsafeField.get(null);
         Method invokeCleaner = unsafeClass.getMethod("invokeCleaner", ByteBuffer.class);
         invokeCleaner.invoke(unsafe, byteBuffer);
-        System.out.println("\n Контрольная сумма для файла " + name + ": "+ sum);
+        System.out.println("\n Контрольная сумма для файла " + name + ": " + sum);
     }
 
+    /*Чтение строк из файлов в списки, после чего поиск различий*/
     public void compareByLine(String filePath) throws IOException {
         Path newFilePath = Paths.get(filePath);
         String copiedFile = newFilePath.getParent() + "_copy\\" + newFilePath.getFileName();
@@ -140,6 +145,7 @@ public class JavaNioWork {
         copyDir();
     }
 
+    /*Создание копии отслеживаемой папки (для вычисления суммы и сравнения файлов)*/
     public void copyDir() throws IOException {
         File src = new File(String.valueOf(folderPath));
         File dst = new File(String.valueOf(folderPath) + "_copy/");
@@ -151,13 +157,7 @@ public class JavaNioWork {
         WatchService watchService = FileSystems.getDefault().newWatchService();
 
         copyDir();
-        /*
-        Files.walk(folderPath).filter(Files::isRegularFile).forEach(
-                path -> {
-                   System.out.println(path.);
-                }
-        );
-        */
+
 
         //будем следить за созданием, изменение и удалением файлов.
         folderPath.register(watchService, ENTRY_CREATE, ENTRY_MODIFY, ENTRY_DELETE);
@@ -172,12 +172,12 @@ public class JavaNioWork {
                 } else if (ENTRY_MODIFY.equals(kind)) {
                     String filePath = String.valueOf(folderPath) + "\\" + event.context();
                     compareByLine(filePath);
-                } else if (ENTRY_DELETE.equals(kind)){
-                    String filePath = String.valueOf(folderPath.getParent()) + "\\test_copy\\"+ event.context();
+                } else if (ENTRY_DELETE.equals(kind)) {
+                    String filePath = String.valueOf(folderPath.getParent()) + "\\test_copy\\" + event.context();
                     prac3(filePath);
                     Files.delete(Paths.get(filePath));
                 }
-                System.out.println("Event kind : " + event.kind() + " - File : " + event.context());
+                System.out.println("Событие: " + event.kind() + " - Файл : " + event.context());
             }
             poll = key.reset();
         }

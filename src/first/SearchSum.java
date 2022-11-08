@@ -12,6 +12,7 @@ public class SearchSum {
         this.size = size;
     }
 
+    /*Последовательный поиск суммы*/
     public int sumInSequence() throws InterruptedException {
         int sum = 0;
         for (int i = 0; i < size; i++) {
@@ -21,6 +22,7 @@ public class SearchSum {
         return sum;
     }
 
+    /*Разделение поиска суммы на два параллельных потока - один вычисляет от 0 элемента до 4999, второй от 5000 до 10000*/
     public int searchForMaxWithThreads() throws InterruptedException {
         MyThread leftPartOfArray = new MyThread(this.array, 5000, 0);
         MyThread rightPartOfArray = new MyThread(this.array, 10000, 5000);
