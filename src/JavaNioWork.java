@@ -10,9 +10,6 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.file.*;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static java.nio.file.StandardWatchEventKinds.*;
 
@@ -21,6 +18,7 @@ public class JavaNioWork {
 
     private static Path folderPath = Paths.get("C:\\Users\\Computer\\IdeaProjects\\RKSP\\test\\");
     private static Path testFilePath = Paths.get("C:\\Users\\Computer\\IdeaProjects\\RKSP\\test\\TestFile.txt");
+    private static Path testFilePathFor1 = Paths.get("C:\\Users\\Computer\\IdeaProjects\\RKSP\\test\\TestFileFor1.txt");
 
     public JavaNioWork() {
     }
@@ -28,13 +26,13 @@ public class JavaNioWork {
     /*Простое создание файла и запись в него, чтение с помощью nio*/
     public void prac1() throws IOException {
         String text = "There is an idea of a Patrick Bateman; some kind of abstraction. But there is no real me: only an entity, something illusory. And though I can hide my cold gaze, and you can shake my hand and feel flesh gripping yours and maybe you can even sense our lifestyles are probably comparable... I simply am not there";
-        try (FileOutputStream file = new FileOutputStream(String.valueOf(testFilePath))) {
+        try (FileOutputStream file = new FileOutputStream(String.valueOf(testFilePathFor1))) {
             byte[] buffer = text.getBytes();
             file.write(buffer, 0, buffer.length);
             file.close();
             System.out.println("Записано");
             //вывод
-            RandomAccessFile aFile = new RandomAccessFile(String.valueOf(testFilePath), "rw");
+            RandomAccessFile aFile = new RandomAccessFile(String.valueOf(testFilePathFor1), "rw");
             FileChannel inChannel = aFile.getChannel();
 
             ByteBuffer buf = ByteBuffer.allocate(256);
@@ -54,14 +52,8 @@ public class JavaNioWork {
 
     public void FileInputStream() throws IOException {
         FileInputStream fileInputStream = new FileInputStream(String.valueOf(testFilePath));
-        int i;
-        String text = "";
-        while ((i = fileInputStream.read()) != -1) {
-            text += (char) i;
-        }
-
         FileOutputStream fileOutputStream = new FileOutputStream(String.valueOf(folderPath) + "/TestFileCopyByFIS.txt");
-        fileOutputStream.write(text.getBytes());
+        fileOutputStream.write(fileInputStream.readAllBytes());
     }
 
     public void FileChannel() throws IOException {

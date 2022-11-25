@@ -21,14 +21,37 @@ public class Main {
         //startFirst();
         //startFutureTaskExample();
         //startGenerator();
+       testSecondPractice();
+    }
+
+    public static void testSecondPractice() throws IOException, NoSuchFieldException, InterruptedException, ClassNotFoundException, InvocationTargetException, IllegalAccessException, NoSuchMethodException {
         JavaNioWork second = new JavaNioWork();
-       /* second.prac1();
+        second.prac1();
+        /*
+        Runtime runtime = Runtime.getRuntime();
+        runtime.gc();
+        long startTime = System.nanoTime();
         second.FileInputStream();
+        long memory = runtime.totalMemory() - runtime.freeMemory();
+        long endTime = System.nanoTime();
+        System.out.println("Время FileInputStream: " + (endTime - startTime) / 1000000 + " Память: " + bytesToMegabytes(memory));
+        startTime = System.nanoTime();
         second.FileChannel();
+        endTime = System.nanoTime();
+        memory = runtime.totalMemory() - runtime.freeMemory();
+        System.out.println("Время FileChannel: " + (endTime - startTime) / 1000000 + " Память: " + bytesToMegabytes(memory));
+        startTime = System.nanoTime();
         second.ApacheCommonsIo();
-        second.FileClass();*/
+        endTime = System.nanoTime();
+        memory = runtime.totalMemory() - runtime.freeMemory();
+        System.out.println("Время ApacheCommonsIo: " + (endTime - startTime) / 1000000 + " Память: " + bytesToMegabytes(memory));
+        startTime = System.nanoTime();
+        second.FileClass();
+        endTime = System.nanoTime();
+        memory = runtime.totalMemory() - runtime.freeMemory();
+        System.out.println("Время FileClass: " + (endTime - startTime) / 1000000 + " Память: " + bytesToMegabytes(memory));
         //second.prac3("\\test\\TestFile.txt");
-        second.prac4();
+        //second.prac4();*/
     }
 
     public static void startFirst() throws InterruptedException {
